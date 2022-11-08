@@ -1,4 +1,4 @@
-`timescale 1ns / 1ns
+`timescale 1ms / 1ms
 module counter_core_sim(
 
     );
@@ -13,7 +13,7 @@ module counter_core_sim(
             clk=~clk;
         end
     end
-    counter_core #(.time_scale(1)) test
+    counter_core test
     (
         .clk(clk),
         .rst(rst),
