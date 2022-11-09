@@ -18,12 +18,16 @@ module counter_commander
     reg clk_core=1'b0;
     reg [1:0]curr_state=2'b00;
     reg [1:0]next_state=2'b00;
+    reg [5:0] min_o;
+    reg [5:0] sec_o;
+    reg [6:0] ms_10_o;
     always @(posedge clk) begin
             clk_counter<=clk_counter+1;
         if (clk_counter>= time_scale) begin
             clk_core<=~clk_core;
             clk_counter<=0;
         end
+        else ;
     end
     always @(posedge clk_core) begin
         curr_state<=next_state;
@@ -41,10 +45,8 @@ module counter_commander
             end
             2'b01:begin
                 case (curr_state)
-                    2'b00: next_state=2'b10;
-                    2'b10: next_state=2'b00;
                     2'b01: next_state=2'b11;
-                    2'b11: next_state=2'b01;
+                    2'b10: next_state=2'b00;
                     default: next_state=curr_state;
                 endcase
             end
@@ -52,6 +54,19 @@ module counter_commander
         endcase
     end
     assign switch=curr_state[0];
+    always @(*) begin
+        if(!curr_state[1])begin
+            min_o=min_o_r;
+            sec_o=sec_o_r;
+            ms_10_o=ms_10_o_r;
+        end
+        else if (record) begin
+            min_o=min_o_r;
+            sec_o=sec_o_r;
+            ms_10_o=ms_10_o_r;
+        end
+        else ;
+    end
     counter_core main_counter(
         .clk_core(clk_core),
         .rst(rst),
