@@ -1,9 +1,8 @@
 module counter_commander
-    #(parameter time_scale = 500000 /*1*/)
     (
-        clk,rst,pause,record,min_o,sec_o,ms_10_o
+        clk_core,rst,pause,record,min_o,sec_o,ms_10_o
         );
-    input clk;
+    input clk_core;
     input rst;
     input pause;
     input record;
@@ -14,21 +13,12 @@ module counter_commander
     wire [5:0] min_o_r;
     wire [5:0] sec_o_r;
     wire [6:0] ms_10_o_r;
-    reg [20:0] clk_counter=21'b0;
-    reg clk_core=1'b0;
+    wire clk_core;
     reg [1:0]curr_state=2'b00;
     reg [1:0]next_state=2'b00;
     reg [5:0] min_o;
     reg [5:0] sec_o;
     reg [6:0] ms_10_o;
-    always @(posedge clk) begin
-            clk_counter<=clk_counter+1;
-        if (clk_counter>= time_scale) begin
-            clk_core<=~clk_core;
-            clk_counter<=0;
-        end
-        else ;
-    end
     always @(posedge clk_core) begin
         curr_state<=next_state;
     end

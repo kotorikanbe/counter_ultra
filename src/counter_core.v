@@ -32,7 +32,7 @@ module counter_core
                     ms_10_o<=7'b0000000;
                 end
         end
-        else if(!rst)begin
+        else if((!rst)&&(!en))begin
                 min_o<=6'b000000;
                 sec_o<=6'b000000;
                 ms_10_o<=7'b0000000;
