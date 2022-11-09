@@ -14,12 +14,46 @@ module counter_commander_sim();
         end
     end
     initial begin
-        #10
+        /*#7
         pause=1'b1;
-        #10
+        #8
         pause=1'b0;
+        #10004
+        record=1'b1;
+        #8
+        record=1'b0;
+        #10004
+        record=1'b1;
+        #8
+        record=1'b0;
+        #10004
+        pause=1'b1;
+        #8
+        pause=1'b0;
+         #10004
+        record=1'b1;
+        #8
+        record=1'b0;
+        #10004
+        pause=1'b1;
+        #8
+        pause=1'b0;
+        #10004
+        pause=1'b1;
+        #8
+        pause=1'b0;
+        #10004
+        rst=1'b0;
+        #8
+        rst=1'b1;
+        #10004
+        pause=1'b1;
+        #8
+        pause=1'b0;*/
     end
-    counter_commander sim_counter(
+    counter_commander  
+    sim_counter
+    (
         .clk(clk),
         .rst(rst),
         .pause(pause),

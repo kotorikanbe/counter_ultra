@@ -1,5 +1,5 @@
 module counter_commander
-    #(parameter time_scale = 500000)
+    #(parameter time_scale = 500000 /*1*/)
     (
         clk,rst,pause,record,min_o,sec_o,ms_10_o
         );
@@ -10,11 +10,11 @@ module counter_commander
     output [5:0] min_o;
     output [5:0] sec_o;
     output [6:0] ms_10_o;
-    wire switch=1'b0;
-    reg [5:0] min_o_r;
-    reg [5:0] sec_o_r;
-    reg [6:0] ms_10_o_r;
-    reg [20:0] clk_counter=0;
+    reg switch=1'b0;
+    wire [5:0] min_o_r;
+    wire [5:0] sec_o_r;
+    wire [6:0] ms_10_o_r;
+    reg [20:0] clk_counter=21'b0;
     reg clk_core=1'b0;
     reg [1:0]curr_state=2'b00;
     reg [1:0]next_state=2'b00;
@@ -53,7 +53,6 @@ module counter_commander
             default: next_state=curr_state;
         endcase
     end
-    assign switch=curr_state[0];
     always @(*) begin
         if(!curr_state[1])begin
             min_o=min_o_r;
@@ -66,6 +65,7 @@ module counter_commander
             ms_10_o=ms_10_o_r;
         end
         else ;
+        switch=curr_state[0];
     end
     counter_core main_counter(
         .clk_core(clk_core),
