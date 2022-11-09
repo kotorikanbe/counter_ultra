@@ -1,7 +1,7 @@
 module seven_segment_display(
-    clk_core,min_i,sec_i,seven_segment_display_o
+    clk,min_i,sec_i,seven_segment_display_o
 );
-input clk_core;
+input clk;
 input [5:0] min_i;
 input [5:0] sec_i;
 output [10:0] seven_segment_display_o;
@@ -9,9 +9,15 @@ reg [3:0] anode;
 reg [6:0] seven_segment;
 reg [1:0] sel=2'b00;
 reg [3:0] target=4'b0000;
+reg [15:0]counts=0 ;
 assign seven_segment_display_o={anode,seven_segment};
-always @(posedge clk_core) begin
-    sel<=sel+2'b01;
+always @(posedge clk) begin
+    counts<=counts+1;
+    if(counts[15])begin
+        sel<=sel+2'b01;
+        counts<=0;
+    end
+    else ;
 end
 always @(*) begin
     case (sel)

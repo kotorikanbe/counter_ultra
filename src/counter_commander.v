@@ -10,9 +10,9 @@ module counter_commander
     output [5:0] sec_o;
     output [6:0] ms_10_o;
     reg switch=1'b0;
-    wire [5:0] min_o_r;
-    wire [5:0] sec_o_r;
-    wire [6:0] ms_10_o_r;
+    wire [5:0] min_o_r=6'b000000;
+    wire [5:0] sec_o_r=6'b000000;
+    wire [6:0] ms_10_o_r=7'b0000000;
     wire clk_core;
     reg [1:0]curr_state=2'b00;
     reg [1:0]next_state=2'b00;
