@@ -1,52 +1,98 @@
 module counter_core
-    #(parameter time_scale = 500000)
     (
-    clk,rst,min_o,sec_o,ms_10_o
+    clk_core,rst,min_o,sec_o,ms_10_o,en
         );
-    input clk;
     input rst;
-    output min_o;
-    output sec_o;
-    output ms_10_o;
-    reg clk_core=1'b0;
-    reg [20:0] clk_counter=0;
-    reg [5:0] min_o=6'b000000;
-    reg [5:0] sec_o=6'b000000;
-    reg [6:0] ms_10_o=7'b0000000;
-    always @(posedge clk) begin
-
-        
-            clk_counter<=clk_counter+1;
-            
-        if (clk_counter>= time_scale) begin
-            clk_core<=~clk_core;
-            clk_counter<=0;
-        end
-    end
+    input en;
+    input clk_core;
+    output [7:0]min_o;
+    output [7:0]sec_o;
+    output [7:0]ms_10_o;
+    reg [3:0] data_1=4'b0000 ;
+    reg [3:0] data_2=4'b0000 ;
+    reg [3:0] data_3=4'b0000;
+    reg [3:0] data_4=4'b0000;
+    reg [3:0] data_5=4'b0000;
+    reg [3:0] data_6=4'b0000;
+    reg [7:0]min_o;
+    reg [7:0]sec_o;
+    reg [7:0]ms_10_o;
     always @(posedge clk_core or negedge rst) begin
         if(!rst)begin
-            min_o<=6'b000000;
-            sec_o<=6'b000000;
-            ms_10_o<=7'b0000000;
+                data_1<=4'b0000;
+                data_2<=4'b0000;
+                data_3<=4'b0000;
+                data_4<=4'b0000;
+                data_5<=4'b0000;
+                data_6<=4'b0000;
+                ms_10_o<={data_2,data_1};
+                sec_o<={data_4,data_3};
+                min_o<={data_6,data_5};
+            end
+        else if(en)begin
+                if (data_1<4'b1001) begin
+                    data_1<=data_1+1'b1;
+                    ms_10_o<={data_2,data_1};
+                    sec_o<={data_4,data_3};
+                    min_o<={data_6,data_5};
+                end
+                else if(data_2<4'b1001) begin
+                    data_2<=data_2+1'b1;
+                    data_1<=4'b0000;
+                    ms_10_o<={data_2,data_1};
+                    sec_o<={data_4,data_3};
+                    min_o<={data_6,data_5};
+                end
+                else if(data_3<4'b1001) begin
+                    data_3<=data_3+1'b1;
+                    data_1<=4'b0000;
+                    data_2<=4'b0000;
+                    ms_10_o<={data_2,data_1};
+                    sec_o<={data_4,data_3};
+                    min_o<={data_6,data_5};
+                end
+                else if(data_4<4'b0101) begin
+                    data_4<=data_4+1'b1;
+                    data_1<=4'b0000;
+                    data_2<=4'b0000;
+                    data_3<=4'b0000;
+                    ms_10_o<={data_2,data_1};
+                    sec_o<={data_4,data_3};
+                    min_o<={data_6,data_5};
+                end
+                else if(data_5<4'b1001) begin
+                    data_5<=data_5+1'b1;
+                    data_1<=4'b0000;
+                    data_2<=4'b0000;
+                    data_3<=4'b0000;
+                    data_4<=4'b0000;
+                    ms_10_o<={data_2,data_1};
+                    sec_o<={data_4,data_3};
+                    min_o<={data_6,data_5};
+                end
+                else if(data_6<4'b1001) begin
+                    data_6<=data_6+1'b1;
+                    data_1<=4'b0000;
+                    data_2<=4'b0000;
+                    data_3<=4'b0000;
+                    data_4<=4'b0000;
+                    data_5<=4'b0000;
+                    ms_10_o<={data_2,data_1};
+                    sec_o<={data_4,data_3};
+                    min_o<={data_6,data_5};
+                end
+                else begin
+                data_1<=4'b0000;
+                data_2<=4'b0000;
+                data_3<=4'b0000;
+                data_4<=4'b0000;
+                data_5<=4'b0000;
+                data_6<=4'b0000;
+                ms_10_o<={data_2,data_1};
+                sec_o<={data_4,data_3};
+                min_o<={data_6,data_5};
+            end
         end
-        else begin
-            if (ms_10_o<99) begin
-                ms_10_o<=ms_10_o+1'b1;
-            end
-            else if(sec_o<59) begin
-                sec_o<=sec_o+1'b1;
-                ms_10_o<=7'b0000000;
-            end
-            else if(min_o<59) begin
-                min_o<=min_o+1;
-                sec_o<=6'b000000;
-                ms_10_o<=7'b0000000;
-            end
-            else begin
-                min_o<=6'b000000;
-                sec_o<=6'b000000;
-                ms_10_o<=7'b0000000;
-            end
-        end
+        else ; 
     end
 endmodule
