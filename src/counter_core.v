@@ -18,7 +18,18 @@ module counter_core
     reg [7:0]sec_o;
     reg [7:0]ms_10_o;
     always @(posedge clk_core or negedge rst) begin
-        if(en)begin
+        if(!rst)begin
+                data_1<=4'b0000;
+                data_2<=4'b0000;
+                data_3<=4'b0000;
+                data_4<=4'b0000;
+                data_5<=4'b0000;
+                data_6<=4'b0000;
+                ms_10_o<={data_2,data_1};
+                sec_o<={data_4,data_3};
+                min_o<={data_6,data_5};
+            end
+        else if(en)begin
                 if (data_1<4'b1001) begin
                     data_1<=data_1+1'b1;
                     ms_10_o<={data_2,data_1};
@@ -82,16 +93,6 @@ module counter_core
                 min_o<={data_6,data_5};
             end
         end
-        else if(!rst)begin
-                data_1<=4'b0000;
-                data_2<=4'b0000;
-                data_3<=4'b0000;
-                data_4<=4'b0000;
-                data_5<=4'b0000;
-                data_6<=4'b0000;
-                ms_10_o<={data_2,data_1};
-                sec_o<={data_4,data_3};
-                min_o<={data_6,data_5};
-            end
+        else ; 
     end
 endmodule
