@@ -70,7 +70,7 @@ module counter_core
                     sec_o<={data_4,data_3};
                     min_o<={data_6,data_5};
                 end
-                else if(data_6<4'b0101) begin
+                else if(data_6<4'b1001) begin
                     data_6<=data_6+1'b1;
                     data_1<=4'b0000;
                     data_2<=4'b0000;
