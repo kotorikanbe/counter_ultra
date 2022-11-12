@@ -2,8 +2,8 @@ module seven_segment_display(
     clk,min_i,sec_i,seven_segment_display_o
 );
 input clk;
-input [5:0] min_i;
-input [5:0] sec_i;
+input [7:0] min_i;
+input [7:0] sec_i;
 output [10:0] seven_segment_display_o;
 reg [3:0] anode;
 reg [6:0] seven_segment;
@@ -23,19 +23,19 @@ always @(*) begin
     case (sel)
         2'b00:begin
             anode=4'b0111;
-            target=min_i/4'd10;
+            target=min_i[7:4];
         end
         2'b01:begin
             anode=4'b1011;
-            target=min_i%4'd10;
+            target=min_i[3:0];
         end
         2'b10:begin
             anode=4'b1101;
-            target=sec_i/4'd10;
+            target=sec_i[7:4];
         end
         2'b11:begin
             anode=4'b1110;
-            target=sec_i%4'd10;
+            target=sec_i[3:0];
         end
         default: begin
             anode=4'b1111;

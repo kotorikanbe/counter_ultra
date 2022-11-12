@@ -6,19 +6,19 @@ module counter_commander
     input rst;
     input pause;
     input record;
-    output [5:0] min_o;
-    output [5:0] sec_o;
-    output [6:0] ms_10_o;
+    output [7:0] min_o;
+    output [7:0] sec_o;
+    output [7:0] ms_10_o;
     reg switch=1'b0;
-    wire [5:0] min_o_r=6'b000000;
-    wire [5:0] sec_o_r=6'b000000;
-    wire [6:0] ms_10_o_r=7'b0000000;
+    wire [7:0] min_o_r=8'b00000000;
+    wire [7:0] sec_o_r=8'b00000000;
+    wire [7:0] ms_10_o_r=8'b00000000;
     wire clk_core;
     reg [1:0]curr_state=2'b00;
     reg [1:0]next_state=2'b00;
-    reg [5:0] min_o;
-    reg [5:0] sec_o;
-    reg [6:0] ms_10_o;
+    reg [7:0] min_o;
+    reg [7:0] sec_o;
+    reg [7:0] ms_10_o;
     always @(posedge clk_core) begin
         curr_state<=next_state;
     end

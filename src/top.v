@@ -11,9 +11,9 @@ module top(
     input display_switch;
     output [10:0] seven_segment_display_o;
     wire clk_core;
-    wire [5:0] min_o_counter;
-    wire [5:0] sec_o_counter;
-    wire [6:0] ms_10_o_counter;
+    wire [7:0] min_o_counter;
+    wire [7:0] sec_o_counter;
+    wire [7:0] ms_10_o_counter;
     wire left_button_p;
     wire rigit_button_p;
     wire up_button_p;
@@ -50,17 +50,17 @@ module top(
     );
     counter_commander main_counter_commander(
         .clk_core(clk_core),
-        .rst((!mode_switch)&&(!right_button_p)),
-        .pause((!mode_switch)&&center_button_p),
-        .record((!mode_switch)&&left_button_p),
+        .rst(!right_button_p),
+        .pause(center_button_p),
+        .record(left_button_p),
         .min_o(min_o_counter),
         .sec_o(sec_o_counter),
         .ms_10_o(ms_10_o_counter)
     );
     seven_segment_display main_seven_segment_display(
         .clk(clk),
-        .min_i((!display_switch)&&min_o_counter),
-        .sec_i((!display_switch)&&sec_o_counter),
+        .min_i(min_o_counter),
+        .sec_i(sec_o_counter),
         .seven_segment_display_o(seven_segment_display_o)
     );
 endmodule

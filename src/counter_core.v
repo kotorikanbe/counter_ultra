@@ -1,41 +1,73 @@
 module counter_core
-    #(parameter time_scale = 500000)
     (
     clk_core,rst,min_o,sec_o,ms_10_o,en
         );
     input rst;
     input en;
     input clk_core;
-    output min_o;
-    output sec_o;
-    output ms_10_o;
-    reg [5:0] min_o=6'b000000;
-    reg [5:0] sec_o=6'b000000;
-    reg [6:0] ms_10_o=7'b0000000;
+    output [7:0]min_o;
+    output [7:0]sec_o;
+    output [7:0]ms_10_o;
+    reg [3:0] data_1=4'b0000 ;
+    reg [3:0] data_2=4'b0000 ;
+    reg [3:0] data_3=4'b0000;
+    reg [3:0] data_4=4'b0000;
+    reg [3:0] data_5=4'b0000;
+    reg [3:0] data_6=4'b0000;
+    assign min_o={data_2,data_1};
+    assign sec_o={data_4,data_3};
+    assign ms_10_o={data_6,data_5};
     always @(posedge clk_core or negedge rst) begin
-        if(en&&rst)begin
-                if (ms_10_o<99) begin
-                    ms_10_o<=ms_10_o+1'b1;
+        if(en)begin
+                if (data_1<4'b1001) begin
+                    data_1<=data_1+1'b1;
                 end
-                else if(sec_o<59) begin
-                    sec_o<=sec_o+1'b1;
-                    ms_10_o<=7'b0000000;
+                else if(data_2<4'b1001) begin
+                    data_2<=data_2+1'b1;
+                    data_1<=4'b0000;
                 end
-                else if(min_o<59) begin
-                    min_o<=min_o+1;
-                    sec_o<=6'b000000;
-                    ms_10_o<=7'b0000000;
+                else if(data_3<4'b1001) begin
+                    data_3<=data_3+1'b1;
+                    data_1<=4'b0000;
+                    data_2<=4'b0000;
+                end
+                else if(data_4<4'b0101) begin
+                    data_4<=data_4+1'b1;
+                    data_1<=4'b0000;
+                    data_2<=4'b0000;
+                    data_3<=4'b0000;
+                end
+                else if(data_5<4'b1001) begin
+                    data_5<=data_5+1'b1;
+                    data_1<=4'b0000;
+                    data_2<=4'b0000;
+                    data_3<=4'b0000;
+                    data_4<=4'b0000;
+                end
+                else if(data_6<4'b0101) begin
+                    data_6<=data_6+1'b1;
+                    data_1<=4'b0000;
+                    data_2<=4'b0000;
+                    data_3<=4'b0000;
+                    data_4<=4'b0000;
+                    data_5<=4'b0000;
                 end
                 else begin
-                    min_o<=6'b000000;
-                    sec_o<=6'b000000;
-                    ms_10_o<=7'b0000000;
-                end
+                data_1<=4'b0000;
+                data_2<=4'b0000;
+                data_3<=4'b0000;
+                data_4<=4'b0000;
+                data_5<=4'b0000;
+                data_6<=4'b0000;
+            end
         end
-        else if((!rst)&&(!en))begin
-                min_o<=6'b000000;
-                sec_o<=6'b000000;
-                ms_10_o<=7'b0000000;
+        else if(!rst)begin
+                data_1<=4'b0000;
+                data_2<=4'b0000;
+                data_3<=4'b0000;
+                data_4<=4'b0000;
+                data_5<=4'b0000;
+                data_6<=4'b0000;
             end
     end
 endmodule

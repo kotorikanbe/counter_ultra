@@ -4,9 +4,9 @@ module counter_core_sim(
     );
     reg clk=0;
     reg rst=1;
-    wire [5:0]min_o;
-    wire [5:0]sec_o;
-    wire [6:0]ms_10_o;
+    wire [7:0]min_o;
+    wire [7:0]sec_o;
+    wire [7:0]ms_10_o;
     initial begin
         while (1) begin
             #5
