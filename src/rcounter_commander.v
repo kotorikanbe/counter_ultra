@@ -78,7 +78,7 @@ always @(*) begin
                     case (target)
                         2'b00: begin
                             if(ms_10_i[3:0]<4'b1001)begin
-                                next_ms_10_i=ms_10_i+1'b1;
+                                next_ms_10_i[3:0]=ms_10_i[3:0]+1'b1;
                             end
                             else if(ms_10_i[7:4]<4'b1001)begin
                                 next_ms_10_i[3:0]=4'b0000;
@@ -90,7 +90,7 @@ always @(*) begin
                         end
                         2'b01: begin
                             if(sec_i[3:0]<4'b1001)begin
-                                next_sec_i=sec_i+1'b1;
+                                next_sec_i[3:0]=sec_i[3:0]+1'b1;
                             end
                             else if(sec_i[7:4]<4'b0110)begin
                                 next_sec_i[3:0]=4'b0000;
@@ -102,7 +102,7 @@ always @(*) begin
                         end
                         2'b10:begin
                             if(min_i[3:0]<4'b1001)begin
-                                next_min_i=min_i+1'b1;
+                                next_min_i[3:0]=min_i[3:0]+1'b1;
                             end
                             else if(min_i[7:4]<4'b1001)begin
                                 next_min_i[3:0]=4'b0000;
@@ -142,7 +142,7 @@ always @(*) begin
                                 next_sec_i[7:4]=sec_i[7:4]-1'b1;
                             end
                             else begin
-                                next_sec_i=8'b01101001;
+                                next_sec_i=8'b01011001;
                             end
                         end
                         2'b10:begin

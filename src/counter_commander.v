@@ -54,7 +54,11 @@ module counter_commander
             sec_o=sec_o_r;
             ms_10_o=ms_10_o_r;
         end
-        else ;
+        else begin
+            min_o=min_o;
+            sec_o=sec_o;
+            ms_10_o=ms_10_o;
+        end;
         switch=curr_state[0];
     end
     counter_core main_counter(
