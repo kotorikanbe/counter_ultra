@@ -25,6 +25,39 @@ initial begin
     #10
     center_button=1;
     #10;
+    center_button=0;
+    #500
+    right_button=1;
+    #10
+    right_button=0;
+    #200000
+    center_button=1;
+    #10;
+    center_button=0;
+    #100
+    left_button=1;
+    #10
+    left_button=0;
+    #100
+    up_button=1;
+    #10
+    up_button=0;
+    #100
+    right_button=1;
+    #10
+    right_button=0;
+    #20
+    right_button=1;
+    #10
+    right_button=0;
+    #20
+    down_button=1;
+    #10
+    down_button=0;
+    #100
+    center_button=1;
+    #10;
+    center_button=0;
 end
 rcounter_commander test(
     .left_button(left_button),

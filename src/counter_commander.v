@@ -59,7 +59,7 @@ module counter_commander
     end
     counter_core main_counter(
         .clk_core(clk_core),
-        .rst(rst),
+        .rst(!rst),
         .en(switch),
         .min_o(min_o_r),
         .sec_o(sec_o_r),
