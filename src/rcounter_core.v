@@ -20,6 +20,7 @@ module rcounter_core(
     reg time_out=1'b0;
     reg flag=1'b0;
     parameter ten =4'b1010 ;
+    parameter six =4'b0110 ;
     always @(*) begin
         if(min_i==min_o_counter&&sec_i==sec_o_counter&&ms_10_i==ms_10_o_counter)begin
             time_out=1'b1;
@@ -27,7 +28,7 @@ module rcounter_core(
             sec_o=8'b00000000;
             ms_10_o=8'b00000000;
         end
-        else begin
+        else if(!time_out)begin
             if(ms_10_i[3:0]<ms_10_o_counter[3:0]) begin
                 ms_10_o[3:0]= (ten-ms_10_o_counter[3:0]) +ms_10_i[3:0] ;
                 flag=1;
@@ -78,7 +79,7 @@ module rcounter_core(
             end
             if(flag) begin
                 if (sec_i[7:4]<(sec_o_counter[7:4]+4'b0001)) begin
-                    sec_o[7:4]=(ten-sec_o_counter[7:4]-4'b0001)+sec_i[7:4];
+                    sec_o[7:4]=(six-sec_o_counter[7:4]-4'b0001)+sec_i[7:4];
                     flag=1;
                 end
                 else begin
@@ -88,7 +89,7 @@ module rcounter_core(
             end
             else begin
                 if (sec_i[7:4]<(sec_o_counter[7:4])) begin
-                    sec_o[7:4]=(ten-sec_o_counter[7:4])+sec_i[7:4];
+                    sec_o[7:4]=(six-sec_o_counter[7:4])+sec_i[7:4];
                     flag=1;
                 end
                 else begin
@@ -118,7 +119,7 @@ module rcounter_core(
             end
             if(flag) begin
                 if (min_i[7:4]<(min_o_counter[7:4]+4'b0001)) begin
-                    min_o[7:4]=(ten-min_o_counter[7:4]-4'b0001)+min_i[7:4];
+                    min_o[7:4]=(six-min_o_counter[7:4]-4'b0001)+min_i[7:4];
                     flag=1;
                 end
                 else begin
@@ -128,7 +129,7 @@ module rcounter_core(
             end
             else begin
                 if (min_i[7:4]<(min_o_counter[7:4])) begin
-                    min_o[7:4]=(ten-min_o_counter[7:4])+min_i[7:4];
+                    min_o[7:4]=(six-min_o_counter[7:4])+min_i[7:4];
                     flag=1;
                 end
                 else begin
