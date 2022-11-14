@@ -62,11 +62,16 @@ always @(*) begin
                     if(target<2'b10)begin
                         next_target=target+1'b1;
                     end
-                    else ;
+                    else begin
+                        next_target=target;
+                    end
                 end
                 4'b0100: begin
                     if(target>2'b00) begin
                         next_target=target-1'b1;
+                    end
+                    else begin
+                        next_target=target;
                     end
                 end
                 4'b0010:begin
@@ -172,7 +177,7 @@ always @(*) begin
         end
         else begin
             switch=1'b1;
-            target=2'b11;
+            next_target=2'b11;
             min_o=min_o_rcounter;
             sec_o=sec_o_rcounter;
             ms_10_o=ms_10_o_rcounter;

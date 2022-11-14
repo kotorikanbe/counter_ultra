@@ -28,7 +28,7 @@ module top(
     reg [7:0] ms_10_o_sel;
     reg [1:0] target_o_sel;
     reg time_out_o_sel;
-    always @(mode_switch) begin
+    always @(*) begin
         if(!mode_switch) begin
             min_o_sel=min_o_counter;
             sec_o_sel=sec_o_counter;
@@ -74,7 +74,8 @@ module top(
         .clk(clk),
         .min_i(min_o_sel),
         .sec_i(sec_o_sel),
-        .seven_segment_display_o(seven_segment_display_o)
+        .seven_segment_display_o(seven_segment_display_o),
+        .flick(target_o_sel)
     );
     button_anti_tremble left(
         .button_i(left_button),
