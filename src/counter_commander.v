@@ -10,9 +10,9 @@ module counter_commander
     output [7:0] sec_o;
     output [7:0] ms_10_o;
     reg switch=1'b0;
-    wire [7:0] min_o_r=8'b00000000;
-    wire [7:0] sec_o_r=8'b00000000;
-    wire [7:0] ms_10_o_r=8'b00000000;
+    wire [7:0] min_o_r;
+    wire [7:0] sec_o_r;
+    wire [7:0] ms_10_o_r;
     wire clk_core;
     reg [1:0]curr_state=2'b00;
     reg [1:0]next_state=2'b00;
@@ -59,7 +59,7 @@ module counter_commander
     end
     counter_core main_counter(
         .clk_core(clk_core),
-        .rst(rst),
+        .rst(!rst),
         .en(switch),
         .min_o(min_o_r),
         .sec_o(sec_o_r),
