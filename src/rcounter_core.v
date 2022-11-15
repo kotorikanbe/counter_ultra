@@ -137,11 +137,18 @@ module rcounter_core(
                     flag=0;
                 end                
             end
+            time_out=1'b0;
+        end
+        else begin
+            time_out=1'b1;
+            min_o=8'b00000000;
+            sec_o=8'b00000000;
+            ms_10_o=8'b00000000;
         end
     end
     counter_core rcounter(
         .clk_core(clk_core),
-        .en(en),
+        .en((!time_out)&&en),
         .rst(rst),
         .ms_10_o(ms_10_o_counter),
         .sec_o(sec_o_counter),

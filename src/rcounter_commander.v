@@ -65,6 +65,9 @@ always @(*) begin
                     else begin
                         next_target=target;
                     end
+                    next_min_i=min_i;
+                    next_sec_i=sec_i;
+                    next_ms_10_i=ms_10_i;
                 end
                 4'b0100: begin
                     if(target>2'b00) begin
@@ -73,12 +76,19 @@ always @(*) begin
                     else begin
                         next_target=target;
                     end
+                    next_min_i=min_i;
+                    next_sec_i=sec_i;
+                    next_ms_10_i=ms_10_i;
                 end
                 4'b0010:begin
+                    next_target=target;
                     case (target)
                         2'b00: begin
+                            next_min_i=min_i;
+                            next_sec_i=sec_i;
                             if(ms_10_i[3:0]<4'b1001)begin
                                 next_ms_10_i[3:0]=ms_10_i[3:0]+1'b1;
+                                next_ms_10_i[7:4]=ms_10_i[7:4];
                             end
                             else if(ms_10_i[7:4]<4'b1001)begin
                                 next_ms_10_i[3:0]=4'b0000;
@@ -89,10 +99,13 @@ always @(*) begin
                             end
                         end
                         2'b01: begin
+                            next_ms_10_i=ms_10_i;
+                            next_min_i=min_i;
                             if(sec_i[3:0]<4'b1001)begin
                                 next_sec_i[3:0]=sec_i[3:0]+1'b1;
+                                next_sec_i[7:4]=sec_i[7:4];
                             end
-                            else if(sec_i[7:4]<4'b0110)begin
+                            else if(sec_i[7:4]<4'b0101)begin
                                 next_sec_i[3:0]=4'b0000;
                                 next_sec_i[7:4]=sec_i[7:4]+1'b1;
                             end
@@ -101,8 +114,11 @@ always @(*) begin
                             end
                         end
                         2'b10:begin
+                            next_ms_10_i=ms_10_i;
+                            next_sec_i=sec_i;
                             if(min_i[3:0]<4'b1001)begin
                                 next_min_i[3:0]=min_i[3:0]+1'b1;
+                                next_min_i[7:4]=min_i[7:4];
                             end
                             else if(min_i[7:4]<4'b1001)begin
                                 next_min_i[3:0]=4'b0000;
@@ -120,10 +136,14 @@ always @(*) begin
                     endcase
                 end
                 4'b0001:begin
+                    next_target=target;
                     case (target)
                         2'b00: begin
+                            next_min_i=min_i;
+                            next_sec_i=sec_i;
                             if(ms_10_i[3:0]>4'b0000) begin
                                 next_ms_10_i[3:0]=ms_10_i[3:0]-1'b1;
+                                next_ms_10_i[7:4]=ms_10_i[7:4];
                             end
                             else if(ms_10_i[7:4]>4'b0000)begin
                                 next_ms_10_i[3:0]=4'b1001;
@@ -134,8 +154,11 @@ always @(*) begin
                             end
                         end
                         2'b01: begin
+                            next_min_i=min_i;
+                            next_ms_10_i=ms_10_i;
                             if(sec_i[3:0]>4'b0000) begin
                                 next_sec_i[3:0]=sec_i[3:0]-1'b1;
+                                next_sec_i[7:4]=sec_i[7:4];
                             end
                             else if(sec_i[7:4]>4'b0000)begin
                                 next_sec_i[3:0]=4'b1001;
@@ -146,8 +169,11 @@ always @(*) begin
                             end
                         end
                         2'b10:begin
+                            next_sec_i=sec_i;
+                            next_ms_10_i=ms_10_i;
                             if(min_i[3:0]>4'b0000) begin
                                 next_min_i[3:0]=min_i[3:0]-1'b1;
+                                next_min_i[7:4]=min_i[7:4];
                             end
                             else if(min_i[7:4]>4'b0000)begin
                                 next_min_i[3:0]=4'b1001;
@@ -186,6 +212,11 @@ always @(*) begin
                 next_sec_i=sec_o_rcounter;
                 next_ms_10_i=ms_10_o_rcounter;
                 next_target=2'b01;                
+            end
+            else begin
+                next_min_i=min_i;
+                next_sec_i=sec_i;
+                next_ms_10_i=ms_10_i;
             end
         end
 end

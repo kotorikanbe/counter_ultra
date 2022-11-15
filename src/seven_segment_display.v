@@ -1,11 +1,12 @@
 module seven_segment_display(
-    clk,min_i,sec_i,seven_segment_display_o,flick
+    clk,min_i,sec_i,seven_segment_display_o,flick,flick_clk
 );
 input clk;
 input [7:0] min_i;
 input [7:0] sec_i;
 input [1:0] flick;
 output [10:0] seven_segment_display_o;
+output flick_clk;
 reg [3:0] anode;
 reg [6:0] seven_segment;
 reg [1:0] sel=2'b00;
