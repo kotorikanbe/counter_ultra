@@ -1,5 +1,5 @@
 module top(
-    left_button,right_button,center_button,up_button,down_button,clk,mode_switch,seven_segment_display_o,vga_display_o
+    left_button,right_button,center_button,up_button,down_button,clk,mode_switch,seven_segment_display_o,led_o,vga_display_o
     );
     input left_button;
     input right_button;
@@ -10,6 +10,7 @@ module top(
     input mode_switch;
     output [10:0] seven_segment_display_o;
     output [13:0] vga_display_o;
+    output [15:0] led_o;
     wire clk_core;
     wire [7:0] min_o_counter;
     wire [7:0] sec_o_counter;
@@ -87,7 +88,9 @@ module top(
         .sec_i(sec_o_sel),
         .seven_segment_display_o(seven_segment_display_o),
         .flick(target_o_sel),
-        .flick_clk(flick_clk)
+        .flick_clk(flick_clk),
+        .time_out_i(time_out_o_sel),
+        .led_o(led_o)
     );
     button_anti_tremble left(
         .button_i(left_button),

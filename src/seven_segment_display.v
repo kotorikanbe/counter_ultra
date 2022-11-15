@@ -1,12 +1,15 @@
 module seven_segment_display(
-    clk,min_i,sec_i,seven_segment_display_o,flick,flick_clk
+    clk,min_i,sec_i,seven_segment_display_o,flick,flick_clk,time_out_i,led_o
 );
 input clk;
 input [7:0] min_i;
 input [7:0] sec_i;
 input [1:0] flick;
+input time_out_i;
 output [10:0] seven_segment_display_o;
 output flick_clk;
+output [15:0] led_o;
+reg [15:0] led_o;
 reg [3:0] anode;
 reg [6:0] seven_segment;
 reg [1:0] sel=2'b00;
@@ -15,6 +18,7 @@ reg [15:0]counts=0 ;
 reg [24:0] flick_counter=0;
 reg flick_clk=1'b0;
 reg [1:0] flick_state;
+reg led_count=0;
 assign seven_segment_display_o={anode,seven_segment};
 always @(posedge clk) begin
     counts<=counts+1;
@@ -44,6 +48,18 @@ always @(posedge clk) begin
         flick_counter<=0;
     end
     else ;
+end
+always @(posedge flick_clk) begin
+    if(led_count&&time_out_i)begin
+        led_o<=16'b1010101010101010;
+    end
+    else if((!led_count)&&time_out_i)begin
+        led_o<=16'b0101010101010101;
+    end
+    else begin
+        led_o<=16'b0000000000000000;
+    end
+    led_count<=~led_count;
 end
 always @(*) begin
     case (sel)
