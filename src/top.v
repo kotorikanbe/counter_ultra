@@ -1,3 +1,6 @@
+////////////////////////
+//此模块用于各模块的整合//
+///////////////////////
 module top(
     left_button,right_button,center_button,up_button,down_button,clk,mode_switch,seven_segment_display_o,led_o,vga_display_o
     );
@@ -31,7 +34,7 @@ module top(
     reg [1:0] target_o_sel;
     reg time_out_o_sel;
     wire flick_clk;
-    vga_display main_vga_display(
+    vga_display main_vga_display(//vga模块接受输入并输出画面
         .clk(clk),
         .min_i(min_o_sel),
         .sec_i(sec_o_sel),
@@ -40,7 +43,7 @@ module top(
         .flick(target_o_sel),
         .flick_clk(flick_clk)
     );
-    always @(*) begin
+    always @(*) begin//此为选通端，选择为秒表模式还是计时器模式
         if(!mode_switch) begin
             min_o_sel=min_o_counter;
             sec_o_sel=sec_o_counter;
@@ -56,11 +59,11 @@ module top(
             time_out_o_sel=time_out_o_rcounter;
         end
     end
-    clock_division main_clock_division(
+    clock_division main_clock_division(//用于分频，此100hz时钟在很多处应用
         .clk_i(clk),
         .clk_o(clk_core)
     );
-    counter_commander main_counter_commander(
+    counter_commander main_counter_commander(//控制秒表，且在计时器模式下无法控制秒表
         .clk_core(clk_core),
         .rst((!mode_switch)&&right_button_p),
         .pause((!mode_switch)&&center_button_p),
@@ -69,7 +72,7 @@ module top(
         .sec_o(sec_o_counter),
         .ms_10_o(ms_10_o_counter)
     );
-    rcounter_commander main_rcounter_commander(
+    rcounter_commander main_rcounter_commander(//控制计时器，且秒表模式下无法控制计时器
         .left_button(mode_switch&&left_button_p),
         .right_button(mode_switch&&right_button_p),
         .center_button(mode_switch&&center_button_p),
@@ -82,7 +85,7 @@ module top(
         .time_out_o(time_out_o_rcounter),
         .target(target_o_rcounter)
     );
-    seven_segment_display main_seven_segment_display(
+    seven_segment_display main_seven_segment_display(//接收输入并在七段数码管输出
         .clk(clk),
         .min_i(min_o_sel),
         .sec_i(sec_o_sel),
@@ -92,6 +95,7 @@ module top(
         .time_out_i(time_out_o_sel),
         .led_o(led_o)
     );
+    //五个按钮的消抖
     button_anti_tremble left(
         .button_i(left_button),
         .button_o(left_button_p),

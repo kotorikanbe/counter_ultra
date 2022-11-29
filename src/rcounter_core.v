@@ -1,3 +1,6 @@
+/////////////////////////////////////////////////////////
+//此为计时器核心模块，主要利用秒表模块，再与输入的数值做减法//
+////////////////////////////////////////////////////////
 module rcounter_core(
     clk_core,min_i,sec_i,ms_10_i,min_o,sec_o,ms_10_o,rst,en,time_out
 );
@@ -21,7 +24,7 @@ module rcounter_core(
     reg flag=1'b0;
     parameter ten =4'b1010 ;
     parameter six =4'b0110 ;
-    always @(*) begin
+    always @(*) begin//减法模块，注意借位即可，此组合逻辑利用flag借位。
         if(min_i==min_o_counter&&sec_i==sec_o_counter&&ms_10_i==ms_10_o_counter)begin
             time_out=1'b1;
             min_o=8'b00000000;

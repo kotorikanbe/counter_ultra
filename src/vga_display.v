@@ -1,35 +1,38 @@
+/////////////////////////////////
+//此为vga显示模块输出RGB444的显示//
+////////////////////////////////
 module vga_display(
     clk,min_i,sec_i,ms_10_i,vga_display_o,flick,flick_clk
 );
-input clk;
-input flick_clk;
+input clk;//输入100Mhz时钟
+input flick_clk;//闪烁时钟直接从七段显示端复用
 input [7:0] min_i;
 input [7:0] sec_i;
 input [7:0] ms_10_i;
 input [1:0] flick;
 output [13:0] vga_display_o;
 reg [13:0] vga_display_o=0;
-wire h_sync;
+wire h_sync;//行同步信号与场同步信号
 wire v_sync;
-reg clk_vga=0;
+reg clk_vga=0;//vga的显示频率，640*480 60fps情况下约为25Mhz
 reg count=0;
-reg [10:0] h_count=0;
-reg [10:0] v_count=0;
-reg [3:0] data_R_sel=4'b0000;
+reg [10:0] h_count=0;//计数器，用于记录每次vga时钟的跳变沿
+reg [10:0] v_count=0;//当h_count跳变复位时跳变
+reg [3:0] data_R_sel=4'b0000;//选择输出端
 reg [3:0] data_G_sel=4'b0000;
 reg [3:0] data_B_sel=4'b0000;
-reg [7:0] min_i_r=8'b0;
+reg [7:0] min_i_r=8'b0;//由于秒表输出为100HZ大于60fps，故需要锁存器，只在每帧开始时导入当前时间
 reg [7:0] sec_i_r=8'b0;
 reg [7:0] ms_10_i_r=8'b0;
 reg [13:0] data_addr=0;
 reg [2:0] flag=3'b000;
-wire end1;
+wire end1;//信号提示
 wire end2;
 reg [3:0] data_R=0;
 reg [3:0] data_G=0;
 reg [3:0] data_B=0;
 wire data_en;
-wire [11:0] data_o_0;
+wire [11:0] data_o_0;//ram输出端
 wire [11:0] data_o_1;
 wire [11:0] data_o_2;
 wire [11:0] data_o_3;
@@ -40,7 +43,7 @@ wire [11:0] data_o_7;
 wire [11:0] data_o_8;
 wire [11:0] data_o_9;
 wire [11:0] data_o_sep;
-parameter hsync_end = 10'd95;
+parameter hsync_end = 10'd95;//一些在640*480 60fps状态下的常量
 parameter hdat_begin = 10'd143;
 parameter hdat_end = 10'd783;
 parameter hpixel_end = 10'd799;
@@ -50,7 +53,7 @@ parameter vdat_end = 10'd514;
 parameter vline_end = 10'd524;
 parameter v_ram_begin =10'd199 ;
 parameter v_ram_end = 10'd349;
-always @(posedge clk) begin
+always @(posedge clk) begin//分频出25Mhz
     if(count==1)begin
         clk_vga<=~clk_vga;
         count<=0;
@@ -59,7 +62,7 @@ always @(posedge clk) begin
         count<=count+1;
     end
 end
-always @(posedge clk_vga) begin
+always @(posedge clk_vga) begin//行计数
     if(end1)begin
         h_count<=10'd0;
     end
@@ -68,7 +71,7 @@ always @(posedge clk_vga) begin
     end
 end
 assign end1=(h_count==hpixel_end);
-always @(posedge clk_vga ) begin
+always @(posedge clk_vga ) begin//场计数
     if(end1)begin
         if(end2)begin
             v_count<=10'd0;
@@ -81,15 +84,15 @@ end
 assign end2=(v_count==vline_end);
 assign h_sync=(h_count>hsync_end);
 assign v_sync=(v_count>vsync_end);
-assign data_en=(v_count>v_ram_begin)&&(v_count<=v_ram_end)&&(h_count>=hdat_begin)&&(h_count<hdat_end);
-always @(*) begin
+assign data_en=(v_count>v_ram_begin)&&(v_count<=v_ram_end)&&(h_count>=hdat_begin)&&(h_count<hdat_end);//用于读取ram
+always @(*) begin//生成latch
     if(! v_sync) begin
     min_i_r=min_i;
     sec_i_r=sec_i;
     ms_10_i_r=ms_10_i;
     end
 end
-always @(*) begin
+always @(*) begin//获得地址，我们每个数字均为RGB444的16进制的80*150的图片，故我们需要每一行读取8次相同的地址，而每过一列要增加80，有效行为150行
     if(!data_en)begin
         data_addr=14'b0;
     end
@@ -132,6 +135,7 @@ always @(*) begin
         end
     end
 end
+//ip核，内含ram
 blk_mem_gen_0 ram_0 (
   .clka(clk_vga),    // input wire clka
   .ena(1),      // input wire ena
@@ -220,7 +224,7 @@ blk_mem_gen_sep ram_sep (
   .dina(12'b0),    // input wire [11 : 0] dina
   .douta(data_o_sep)  // output wire [11 : 0] douta
 );
-always @(*) begin
+always @(*) begin//数据选择器，我们需要对输入的时间和其对应数字图片的rgb数据进行对应，故需要此判断逻辑，同时产生闪烁效果。
     case (flag)
         3'b000: begin
             if(flick_clk&&(flick==2'b10))begin
@@ -635,7 +639,7 @@ always @(*) begin
         end
     endcase
 end
-always @(posedge clk_vga) begin
+always @(posedge clk_vga) begin//输出判断逻辑，分离接口。
     if(data_en)begin
         data_R<=data_R_sel;
         data_G<=data_G_sel;

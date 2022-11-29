@@ -1,10 +1,13 @@
+/////////////////////////////
+//此为七段显示管和led控制模块//
+////////////////////////////
 module seven_segment_display(
     clk,min_i,sec_i,seven_segment_display_o,flick,flick_clk,time_out_i,led_o
 );
 input clk;
 input [7:0] min_i;
 input [7:0] sec_i;
-input [1:0] flick;
+input [1:0] flick;//此为闪烁模块，为计时器置数时进行闪烁
 input time_out_i;
 output [10:0] seven_segment_display_o;
 output flick_clk;
@@ -20,7 +23,7 @@ reg flick_clk=1'b0;
 reg [1:0] flick_state;
 reg led_count=0;
 assign seven_segment_display_o={anode,seven_segment};
-always @(posedge clk) begin
+always @(posedge clk) begin//此为时钟分频模块，其快于clk_core
     counts<=counts+1;
     if(counts[15])begin
         sel<=sel+2'b01;
@@ -28,7 +31,7 @@ always @(posedge clk) begin
     end
     else ;
 end
-always @(flick) begin
+always @(flick) begin//没有必要的模块，历史遗留
     case (flick)
         2'b01: begin
             flick_state=2'b01;
@@ -41,7 +44,7 @@ always @(flick) begin
         end
     endcase
 end
-always @(posedge clk) begin
+always @(posedge clk) begin//闪烁分频模块，为了防止瞎眼而设置的位数极高
     flick_counter<=flick_counter+1;
     if(flick_counter[24]) begin
         flick_clk<=~flick_clk;
@@ -49,7 +52,7 @@ always @(posedge clk) begin
     end
     else ;
 end
-always @(posedge flick_clk) begin
+always @(posedge flick_clk) begin//闪烁模块，利用交替闪烁进行，此闪烁仅在时间为0时进行
     if(led_count&&time_out_i)begin
         led_o<=16'b1010101010101010;
     end
@@ -61,7 +64,7 @@ always @(posedge flick_clk) begin
     end
     led_count<=~led_count;
 end
-always @(*) begin
+always @(*) begin//此为7段显示模块，提供显示的数字以及对应的显示码，此外为了实现闪烁，当由闪烁时直接使anode为1无效即可
     case (sel)
         2'b00:begin
             anode={flick_state[1]&&flick_clk,3'b111};
